@@ -1,1 +1,20 @@
 @import "tailwindcss";
+
+@layer components {
+  .banner {
+    @apply border-4 border-zinc-800 bg-amber-300 text-center font-semibold text-3xl;
+  }
+
+  .app {
+    @apply flex flex-col;
+  }
+
+  .main-content {
+    @apply flex flex-row justify-evenly;
+  }
+
+  /* Child Combinator: "all elements that are direct children of a specified element". Works with className parent and generic child. Preserving for later use */
+  .main-content > div {
+    @apply border-2 border-red-500 grow;
+  }
+}
