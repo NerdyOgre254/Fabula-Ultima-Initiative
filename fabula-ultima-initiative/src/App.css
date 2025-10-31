@@ -17,4 +17,8 @@
   .main-content > div {
     @apply border-2 border-red-500 grow;
   }
+
+  .column-header {
+    @apply capitalize text-center text-3xl font-bold;
+  }
 }
