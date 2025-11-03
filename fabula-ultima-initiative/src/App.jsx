@@ -40,60 +40,55 @@ const RadioGroup = ({ selectedValue, onValueChange, name }) => {
 //contain all characters of that category.
 //unsure how at this time, but there should be a line pointing from the bottom right of every
 //box in the left column if there is a matching one in the right column
-const LeftColumn = ({ title }) => {
+
+/*for each member of combatants, where their type matches the column title, create a dropdown input*/
+
+const LeftColumn = ({ title, combatants }) => {
+  const filteredCombatants = combatants.filter((combatant) => combatant.type === title);
   return (
     <div className="left-column">
       <p className="column-header">{title}</p>
+      {filteredCombatants.map((filteredCombatant, index) => (
+        <div key={index}>
+          <select key={index}>
+            <option value="None">---</option>
+            {filteredCombatants.map((filteredCombatantTwo, idx) => (
+              <option key={idx} value={filteredCombatantTwo.name}>
+                {filteredCombatantTwo.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      ))}
     </div>
   );
 };
 
-const RightColumn = ({ title }) => {
+const RightColumn = ({ title, combatants }) => {
   //the shorthand for ternary operator, going against everything I was taught in my early days
   const header = title === "heroes" ? "foes" : "heroes";
+  const filteredCombatants = combatants.filter((combatant) => combatant.type === header);
   return (
     <div className="right-column">
       <p className="column-header">{header}</p>
-    </div>
-  );
-};
-
-//table. Columns of table are: Name, Hero or Foe, and Remove
-//Name: Text Hero: Radio Foe: Radio (both in radio group), Remove: Button
-const CombatantTable = ({ players }) => {
-  return (
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <td>Name</td>
-            <td>Hero</td>
-            <td>Foe</td>
-            <td>Remove</td>
-          </tr>
-        </thead>
-        <tbody>
-          {players.map((player, index) => (
-            <tr key={index}>
-              <td>
-                {player.name}
-                {/*EDITABLE INPUT*/}
-              </td>
-              <td>{/* HEROES RADIO BOX */}</td>
-              <td>{/* FOES RADIO BOX */}</td>
-              <td>{/* REMOVE BUTTON*/}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <button>Add</button>
-      {/* ADD NEW CHARACTER BUTTON */}
+      {filteredCombatants.map((filteredCombatant, index) => (
+        <div key={index}>
+          <select key={index}>
+            <option value="None">---</option>
+            {filteredCombatants.map((filteredCombatantTwo, idx) => (
+              <option key={idx} value={filteredCombatantTwo.name}>
+                {filteredCombatantTwo.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      ))}
     </div>
   );
 };
 
 //options column, contains spots for radiogroup for priority, table for adding/removing
-const OptionsColumn = ({ playerInitiative, setPlayerInitiative, combatants }) => {
+const OptionsColumn = ({ playerInitiative, setPlayerInitiative, combatants, setCombatants }) => {
   return (
     <div className="options-column">
       <p className="column-header">Options</p>
@@ -102,8 +97,78 @@ const OptionsColumn = ({ playerInitiative, setPlayerInitiative, combatants }) =>
         onValueChange={setPlayerInitiative}
         name="initiativePriority"
       />
-      <CombatantTable players={combatants} />
+      <CombatantManager combatants={combatants} setCombatants={setCombatants} />
     </div>
+  );
+};
+
+const CombatantManager = ({ combatants, setCombatants }) => {
+  const addCombatant = () => {
+    setCombatants([...combatants, { id: Date.now(), name: "", type: "heroes" }]);
+  };
+
+  const removeCombatant = (id) => {
+    setCombatants(combatants.filter((combatant) => combatant.id !== id));
+  };
+
+  //allows for changing one item in a bunch
+  const updateCombatant = (id, field, value) => {
+    setCombatants(
+      combatants.map((combatant) =>
+        combatant.id === id ? { ...combatant, [field]: value } : combatant
+      )
+    );
+  };
+
+  return (
+    <>
+      <table>
+        <thead>
+          <tr>
+            <td>Name</td>
+            <td>Heroes</td>
+            <td>Foes</td>
+            <td>Remove</td>
+          </tr>
+        </thead>
+        <tbody>
+          {combatants.map((combatant) => (
+            <tr key={combatant.id}>
+              <td>
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={combatant.name}
+                  onChange={(e) => updateCombatant(combatant.id, "name", e.target.value)}
+                />
+              </td>
+              <td>
+                <input
+                  type="radio"
+                  name={`type-${combatant.id}`}
+                  value="heroes"
+                  checked={combatant.type === "heroes"}
+                  onChange={(e) => updateCombatant(combatant.id, "type", e.target.value)}
+                />
+              </td>
+              <td>
+                <input
+                  type="radio"
+                  name={`type-${combatant.id}`}
+                  value="foes"
+                  checked={combatant.type === "foes"}
+                  onChange={(e) => updateCombatant(combatant.id, "type", e.target.value)}
+                />
+              </td>
+              <td>
+                <button onClick={() => removeCombatant(combatant.id)}>Remove</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <button onClick={addCombatant}>Add</button>
+    </>
   );
 };
 
@@ -115,11 +180,13 @@ const App = () => {
     <div className="app">
       <Banner />
       <div className="main-content">
-        <LeftColumn title={playerInitiative} />
-        <RightColumn title={playerInitiative} />
+        <LeftColumn title={playerInitiative} combatants={combatants} />
+        <RightColumn title={playerInitiative} combatants={combatants} />
         <OptionsColumn
           playerInitiative={playerInitiative}
           setPlayerInitiative={setPlayerInitiative}
+          combatants={combatants}
+          setCombatants={setCombatants}
         />
       </div>
     </div>
