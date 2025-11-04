@@ -50,7 +50,7 @@ const LeftColumn = ({ title, combatants }) => {
       <p className="column-header">{title}</p>
       {filteredCombatants.map((filteredCombatant, index) => (
         <div key={index}>
-          <select key={index}>
+          <select className="turn-option" key={index}>
             <option value="None">---</option>
             {filteredCombatants.map((filteredCombatantTwo, idx) => (
               <option key={idx} value={filteredCombatantTwo.name}>
@@ -73,7 +73,7 @@ const RightColumn = ({ title, combatants }) => {
       <p className="column-header">{header}</p>
       {filteredCombatants.map((filteredCombatant, index) => (
         <div key={index}>
-          <select key={index}>
+          <select className="turn-option" key={index}>
             <option value="None">---</option>
             {filteredCombatants.map((filteredCombatantTwo, idx) => (
               <option key={idx} value={filteredCombatantTwo.name}>

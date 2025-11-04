@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
 @layer components {
+  html {
+    @apply bg-stone-400;
+  }
+
   .banner {
-    @apply border-4 border-zinc-800 bg-amber-300 text-center font-semibold text-3xl;
+    @apply border-4 rounded-xl border-amber-950 bg-amber-300 text-center font-semibold text-3xl;
   }
 
   .app {
@@ -15,10 +19,42 @@
 
   /* Child Combinator: "all elements that are direct children of a specified element". Works with className parent and generic child. Preserving for later use */
   .main-content > div {
-    @apply border-2 border-red-500 grow;
+    @apply border-2 border-amber-950 rounded-xl grow;
   }
 
   .column-header {
     @apply capitalize text-center text-3xl font-bold;
+  }
+
+  .turn-option {
+    @apply text-center border-2 rounded shadow shadow-black;
+  }
+
+  .left-column {
+    @apply text-center;
+  }
+
+  .right-column {
+    @apply text-center;
+  }
+
+  .options-column {
+    @apply text-center;
+  }
+
+  thead > tr {
+    @apply bg-amber-300;
+  }
+
+  table {
+    @apply mx-auto;
+  }
+
+  tbody > tr {
+    @apply border-b-2;
+  }
+
+  button {
+    @apply border-2 border-gray-600 shadow rounded bg-gray-200;
   }
 }
